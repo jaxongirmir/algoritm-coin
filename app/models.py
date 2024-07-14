@@ -97,7 +97,7 @@ class Teacher(Base, PasswordMixin, TokenMixin):
     )
     fullname: Mapped[str] = mapped_column(VARCHAR(31))
     email: Mapped[str] = mapped_column(VARCHAR(255), unique=True, nullable=False)
-    password_hash: Mapped[bytes] = mapped_column(BYTEA(60), nullable=False)
+    _password: Mapped[bytes] = mapped_column(BYTEA(60), nullable=False)
 
     image: Mapped[str] = mapped_column(TEXT, nullable=True)
     admin: Mapped[bool] = mapped_column(BOOLEAN, default=False)
