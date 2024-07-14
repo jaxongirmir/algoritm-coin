@@ -4,7 +4,7 @@ from sqlalchemy.engine import make_url
 from sqlalchemy.ext.asyncio.engine import create_async_engine
 from sqlalchemy.ext.asyncio.session import async_sessionmaker
 
-load_dotenv(".env")
+load_dotenv()
 
 USER = getenv("PGUSER")
 PASSWORD = getenv("PGPASSWORD")
