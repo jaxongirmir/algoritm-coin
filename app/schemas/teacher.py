@@ -40,7 +40,9 @@ class TeacherCreate(Teacher, PasswordMixin):
         min_length=6,
         max_length=32,
     )
-
+    password_hash: bytes = Field(
+        title="Teacher’s password", description="Teacher’s password", exclude=True
+    )
     admin: bool = Field(
         title="Checkbox",
         description="Admin status",
