@@ -17,3 +17,13 @@ app.add_middleware(
 from app.api.routers import api_routers
 
 app.include_router(api_routers)
+from os import getenv
+
+PGUSER = getenv("PGUSER")
+PASSWORD = getenv("PGPASSWORD")
+HOST = getenv("PGHOST")
+PORT = getenv("PGPORT")
+DATABASE = getenv("PGDATABASE")
+
+
+print(f"postgresql+asyncpg://{PGUSER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}")
