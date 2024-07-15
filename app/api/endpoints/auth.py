@@ -18,7 +18,7 @@ cookie = APIKeyCookie(name="token")
 )
 async def login(
     response: Response,
-    payload: Login,
+    payload: Login = Depends(),
     session: AsyncSession = Depends(get_session),
 ):
     teacher = Teacher()
