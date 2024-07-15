@@ -67,6 +67,42 @@ class GroupResponse(BaseModel):
     )
 
 
+class Student(BaseModel):
+    model_config = config
+    id: UUID = Field(title="Student’s id", description="Student’s id")
+    phone_number: Annotated[str, StringConstraints(pattern=r"^\+\d{12}$")] = Field(
+        title="Student’s phone number",
+        description="Student’s phone number",
+        examples=["+998990019437"],
+    )
+    fullname: str = Field(
+        title="Student’s fullname",
+        description="Student’s fullname",
+        examples=["Jahongir Yusupov"],
+    )
+
+
+class GroupsResponse(BaseModel):
+    model_config = config
+    id: UUID = Field(title="Teacher’s id", description="Teacher’s id")
+    major: str = Field(
+        title="Group’s major",
+        description="Group’s major",
+        examples=[
+            "it",
+            "english",
+            "russian",
+            "uzb",
+            "biology",
+            "math",
+            "chemstry",
+            "physics",
+            "english_kids",
+        ],
+    )
+    students: List[Optional[Student]]
+
+
 class TeacherResponse(Teacher):
     id: UUID = Field(title="Teacher’s id", description="Teacher’s id")
     admin: bool = Field(

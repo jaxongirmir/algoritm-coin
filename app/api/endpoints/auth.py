@@ -7,6 +7,7 @@ from ..dependencies.session import get_session
 
 from ...models import Teacher
 from ...schemas.auth import Login, ForgotPassword
+from ...schemas.teacher import TeachersResponse
 
 auth_router = APIRouter(prefix="/auth")
 cookie = APIKeyCookie(name="token")
@@ -34,6 +35,22 @@ async def login(
     token = await exist_teacher.generate_token()
     response.set_cookie("token", token)
     return {"detail": "Siz muvaffaqiyatli tizimga kirdingiz"}
+
+
+@auth_router.get(
+    "/me", status_code=status.HTTP_201_CREATED, response_model=TeachersResponse
+)
+async def me(
+    token: str = Depends(cookie),
+    session: AsyncSession = Depends(get_session),
+):
+    teacher = Teacher()
+    if not await teacher.verify_token(token):
+        raise HTTPException(
+            detail="Qaytadan kiring", status_code=status.HTTP_401_UNAUTHORIZED
+        )
+
+    return await teacher.get_with_groups_and_students(session)
 
 
 # @auth_router.post(

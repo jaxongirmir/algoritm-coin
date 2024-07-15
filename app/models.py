@@ -139,7 +139,11 @@ class Teacher(Base, PasswordMixin, TokenMixin):
     async def get_with_groups_and_students(self, session: AsyncSession):
         await self.get_with_options(
             session,
-            [selectinload(self.__class__.groups).options(selectinload(Group.students))],
+            [
+                selectinload(self.__class__.groups).options(
+                    selectinload(self.__class__.groups.property.mapper.class_.students)
+                )
+            ],
         )
 
     async def get_all_with_groups_and_students(self, session: AsyncSession):
