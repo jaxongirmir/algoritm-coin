@@ -33,7 +33,7 @@ async def login(
         )
     token = await exist_teacher.generate_token()
     response.set_cookie("token", token)
-    return
+    return {"detail": "Siz muvaffaqiyatli tizimga kirdingiz"}
 
 
 # @auth_router.post(
