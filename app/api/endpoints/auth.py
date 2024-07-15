@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import APIKeyCookie
+from fastapi.responses import JSONResponse
 from ..dependencies.session import get_session
 
 from ...models import Teacher
@@ -18,7 +19,6 @@ cookie = APIKeyCookie(name="token")
     status_code=status.HTTP_201_CREATED,
 )
 async def login(
-    response: Response,
     payload: Login = Depends(),
     session: AsyncSession = Depends(get_session),
 ):
@@ -33,8 +33,9 @@ async def login(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Notogri parol"
         )
     token = await exist_teacher.generate_token()
-    response.set_cookie("token", token)
-    return {"detail": "Siz muvaffaqiyatli tizimga kirdingiz"}
+    response = JSONResponse(content={"detail": "Siz muvaffaqiyatli tizimga kirdingiz"})
+    response.set_cookie(key="token", value=token)
+    return response
 
 
 @auth_router.get(
@@ -54,7 +55,6 @@ async def me(
     return teacher
 
 
-arr = [4, 5, 1, 45, 12]
 # @auth_router.post(
 #     "/forgot-password",
 #     status_code=status.HTTP_201_CREATED,
