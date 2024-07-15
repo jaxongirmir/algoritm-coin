@@ -47,26 +47,6 @@ class TeacherCreate(Teacher, PasswordMixin):
     )
 
 
-class GroupResponse(BaseModel):
-    model_config = config
-    id: UUID = Field(title="Teacher’s id", description="Teacher’s id")
-    major: str = Field(
-        title="Group’s major",
-        description="Group’s major",
-        examples=[
-            "it",
-            "english",
-            "russian",
-            "uzb",
-            "biology",
-            "math",
-            "chemstry",
-            "physics",
-            "english_kids",
-        ],
-    )
-
-
 class Student(BaseModel):
     model_config = config
     id: UUID = Field(title="Student’s id", description="Student’s id")
@@ -120,7 +100,7 @@ class TeachersResponse(Teacher):
         examples=[True, False],
     )
 
-    groups: List[Optional[GroupResponse]]
+    groups: List[Optional[GroupsResponse]]
 
 
 class TeacherUpdate(BaseModel, PasswordMixin):

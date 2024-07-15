@@ -50,9 +50,11 @@ async def me(
             detail="Qaytadan kiring", status_code=status.HTTP_401_UNAUTHORIZED
         )
 
-    return await teacher.get_with_groups_and_students(session)
+    await teacher.get_with_groups_and_students(session)
+    return teacher
 
 
+arr = [4, 5, 1, 45, 12]
 # @auth_router.post(
 #     "/forgot-password",
 #     status_code=status.HTTP_201_CREATED,
