@@ -15,7 +15,7 @@ engine = create_async_engine(
     url=make_url(
         name_or_url=f"postgresql+asyncpg://{USER}:{PASSWORD}@{HOST}:{PORT}/{DATABASE}"
     ),
-    echo=True,
+    echo=False,
     future=True,
     pool_size=5,
     max_overflow=10,

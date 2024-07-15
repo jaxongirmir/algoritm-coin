@@ -25,6 +25,12 @@ async def create_group(
         )
     await teacher.get(session)
     if teacher.admin:
+        group_teacher = Teacher(id=payload.teacher_id)
+        if not await group_teacher.get(session):
+            raise HTTPException(
+                detail="O'qtuvchi topilmadi",
+                status_code=status.HTTP_404_NOT_FOUND,
+            )
         group = Group(**payload.model_dump())
     else:
         payload.teacher_id = teacher.id

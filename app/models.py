@@ -40,7 +40,6 @@ class Base(DeclarativeBase, AsyncAttrs):
 
     async def get(self, session: AsyncSession):
         obj = await session.get(self.__class__, self.id)
-        print(obj)
         if obj:
             for key, value in vars(obj).items():
                 setattr(self, key, value)

@@ -24,7 +24,12 @@ async def create_teacher(
     session: AsyncSession = Depends(get_session),
 ):
     await payload.hach_password()
-    teacher = Teacher(**payload.model_dump(exclude={"password"}))
+    teacher = Teacher(
+        _password=payload._password,
+        **payload.model_dump(
+            exclude={"password"},
+        )
+    )
     await teacher.save(session)
     return teacher
 
