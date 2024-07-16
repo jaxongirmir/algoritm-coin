@@ -13,6 +13,7 @@ from sqlalchemy.orm import (
     selectinload,
 )
 from sqlalchemy.dialects.postgresql import (
+    SMALLINT,
     VARCHAR,
     TEXT,
     UUID,
@@ -226,3 +227,39 @@ class Student(Base):
                 )
             ],
         )
+
+
+# class Student(Base):
+#     __tablename__ = "students"
+
+#     id: Mapped[uuid.UUID] = mapped_column(
+#         UUID(as_uuid=True), primary_key=True, default=uuid.uuid4
+#     )
+#     quanty: Mapped[int] = mapped_column(SMALLINT())
+#     lastname: Mapped[str] = mapped_column(VARCHAR(31))
+#     phone_number: Mapped[str] = mapped_column(VARCHAR(12), unique=True, nullable=False)
+#     image: Mapped[str] = mapped_column(TEXT, nullable=True)
+
+#     groups: Mapped[List[Group]] = relationship(
+#         "Group", secondary=groups_students, back_populates="students"
+#     )
+
+#     async def get_with_groups_and_teachers(self, session: AsyncSession):
+#         return await self.get_with_options(
+#             session,
+#             [
+#                 selectinload(self.__class__.groups).joinedload(
+#                     self.__class__.groups.property.mapper.class_.teacher
+#                 )
+#             ],
+#         )
+
+#     async def get_all_with_groups_and_teachers(self, session: AsyncSession):
+#         return await self.get_all_with_options(
+#             session,
+#             [
+#                 selectinload(self.__class__.groups).joinedload(
+#                     self.__class__.groups.property.mapper.class_.teacher
+#                 )
+#             ],
+#         )

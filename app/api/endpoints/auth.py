@@ -70,3 +70,17 @@ async def forgot_password(
         )
     token = await exist_teacher.generate_token()
     return
+
+
+@auth_router.get(
+    "/logout",
+    status_code=status.HTTP_201_CREATED,
+)
+async def logout(
+    token: str = Depends(cookie),
+):
+    response = JSONResponse(
+        content={"detail": "Siz tizimdan muvaffaqiyatli chiqdingiz"}
+    )
+    response.delete_cookie(key="token")
+    return response
