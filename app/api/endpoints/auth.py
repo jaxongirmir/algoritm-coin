@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from api.dependencies.session import get_session
 from models import Teacher
 from schemas.auth import Login, ForgotPassword
-from schemas.teacher import TeachersResponse
+from schemas.teacher import TeacherWithGroupsResponse
 
 auth_router = APIRouter(prefix="/auth")
 cookie = APIKeyCookie(name="token")
@@ -32,13 +32,16 @@ async def login(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Notogri parol"
         )
     token = await exist_teacher.generate_token()
+
     response = JSONResponse(content={"detail": "Siz muvaffaqiyatli tizimga kirdingiz"})
     response.set_cookie(key="token", value=token)
     return response
 
 
 @auth_router.get(
-    "/me", status_code=status.HTTP_202_ACCEPTED, response_model=TeachersResponse
+    "/me",
+    status_code=status.HTTP_202_ACCEPTED,
+    response_model=TeacherWithGroupsResponse,
 )
 async def me(
     token: str = Depends(cookie),

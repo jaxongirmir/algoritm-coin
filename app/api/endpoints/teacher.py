@@ -6,7 +6,7 @@ from api.dependencies.session import get_session
 from schemas.teacher import (
     TeacherCreate,
     TeacherResponse,
-    TeachersResponse,
+    TeacherWithGroupsResponse,
     TeacherUpdate,
 )
 from models import Teacher
@@ -36,7 +36,7 @@ async def create_teacher(
 
 
 @teacher_router.get(
-    "/", status_code=status.HTTP_200_OK, response_model=List[TeachersResponse]
+    "/", status_code=status.HTTP_200_OK, response_model=List[TeacherWithGroupsResponse]
 )
 async def get_teachers(
     session: AsyncSession = Depends(get_session),

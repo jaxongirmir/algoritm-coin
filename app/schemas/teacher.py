@@ -92,7 +92,7 @@ class TeacherResponse(Teacher):
     )
 
 
-class TeachersResponse(Teacher):
+class TeacherWithGroupsResponse(Teacher):
     id: UUID = Field(title="Teacher’s id", description="Teacher’s id")
     admin: bool = Field(
         title="Checkbox",

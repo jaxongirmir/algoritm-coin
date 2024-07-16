@@ -1,6 +1,6 @@
 from __future__ import annotations
 import uuid
-from typing import Any, List
+from typing import Optional, Self, Any, List
 from sqlalchemy.future import select
 from sqlalchemy import ForeignKey, Column, Table, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncAttrs
@@ -30,20 +30,20 @@ class Base(DeclarativeBase, AsyncAttrs):
     __abstract__ = True
     id: Any
 
-    async def save(self, session: AsyncSession):
+    async def save(self, session: AsyncSession) -> Self:
         session.add(self)
         await session.commit()
         await session.refresh(self)
         return self
 
-    async def get(self, session: AsyncSession):
+    async def get(self, session: AsyncSession) -> Optional[Self]:
         obj = await session.get(self.__class__, self.id)
         if obj:
             for key, value in vars(obj).items():
                 setattr(self, key, value)
             return self
 
-    async def get_by(self, session: AsyncSession, **kwargs):
+    async def get_by(self, session: AsyncSession, **kwargs) -> Optional[Self]:
         result = await session.execute(select(self.__class__).filter_by(**kwargs))
         obj = result.scalar_one_or_none()
         if obj:
@@ -51,7 +51,9 @@ class Base(DeclarativeBase, AsyncAttrs):
                 setattr(self, key, value)
         return obj
 
-    async def get_with_options(self, session: AsyncSession, options: list):
+    async def get_with_options(
+        self, session: AsyncSession, options: list
+    ) -> Optional[Self]:
         result = await session.execute(
             select(self.__class__).where(self.__class__.id == self.id).options(*options)
         )
@@ -63,15 +65,17 @@ class Base(DeclarativeBase, AsyncAttrs):
                     setattr(self, key, value)
             return self
 
-    async def get_all(self, session: AsyncSession):
+    async def get_all(self, session: AsyncSession) -> List[Optional[Self]]:
         result = await session.execute(select(self.__class__))
         return list(result.scalars().all())
 
-    async def get_all_with_options(self, session: AsyncSession, options: list):
+    async def get_all_with_options(
+        self, session: AsyncSession, options: list
+    ) -> List[Optional[Self]]:
         result = await session.execute(select(self.__class__).options(*options))
         return list(result.scalars().all())
 
-    async def update(self, session: AsyncSession, **kwargs):
+    async def update(self, session: AsyncSession, **kwargs) -> Self:
         await session.execute(
             update(self.__class__).where(self.__class__.id == self.id).values(**kwargs)
         )
