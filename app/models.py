@@ -21,7 +21,7 @@ from sqlalchemy.dialects.postgresql import (
     BOOLEAN,
 )
 
-from app.service.jwt_token import TokenMixin
+from service.jwt_token import TokenMixin
 from service.password import PasswordMixin
 
 
