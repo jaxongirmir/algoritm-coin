@@ -79,7 +79,6 @@ class Base(DeclarativeBase, AsyncAttrs):
         result = await session.execute(
             update(self.__class__).where(self.__class__.id == self.id).values(**kwargs)
         )
-        print(result)
         await session.commit()
         return self
 

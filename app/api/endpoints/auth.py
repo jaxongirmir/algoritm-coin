@@ -1,9 +1,9 @@
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import APIKeyCookie
-from fastapi.responses import JSONResponse
+from fastapi.responses import Response
 from api.dependencies.session import get_session
 from models import Teacher
 from schemas.auth import Login, ForgotPassword
@@ -15,9 +15,10 @@ cookie = APIKeyCookie(name="token")
 
 @auth_router.get(
     "/login",
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_202_ACCEPTED,
 )
 async def login(
+    response: Response,
     payload: Login = Depends(),
     session: AsyncSession = Depends(get_session),
 ):
@@ -33,11 +34,12 @@ async def login(
         )
     token = await exist_teacher.generate_token()
 
-    response = JSONResponse(content={"detail": "Siz muvaffaqiyatli tizimga kirdingiz"})
     response.set_cookie(
-        key="token", value=token, httponly=True, secure=True, samesite="none"
+        key="token",
+        value=token,
+        httponly=True,
     )
-    return response
+    return {"detail": "Siz muvaffaqiyatli tizimga kirdingiz"}
 
 
 @auth_router.get(
@@ -61,7 +63,7 @@ async def me(
 
 @auth_router.post(
     "/forgot-password",
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_205_RESET_CONTENT,
 )
 async def forgot_password(
     payload: ForgotPassword = Depends(),
@@ -82,10 +84,8 @@ async def forgot_password(
     status_code=status.HTTP_200_OK,
 )
 async def logout(
+    response: Response,
     token: str = Depends(cookie),
 ):
-    response = JSONResponse(
-        content={"detail": "Siz tizimdan muvaffaqiyatli chiqdingiz"}
-    )
     response.delete_cookie(key="token")
-    return response
+    return {"detail": "Siz tizimdan muvaffaqiyatli chiqdingiz"}
