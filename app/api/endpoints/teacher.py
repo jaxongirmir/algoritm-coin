@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from api.dependencies.session import get_session
 from schemas.teacher import (
     TeacherCreate,
@@ -24,6 +24,12 @@ async def create_teacher(
     payload: TeacherCreate,
     session: AsyncSession = Depends(get_session),
 ):
+    exist_teacher = Teacher()
+    if await exist_teacher.get_by(session, email=payload.email):
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=f"Bu email {exist_teacher.fullname} ga tegishli",
+        )
     await payload.hach_password()
     teacher = Teacher(
         _password=payload._password,

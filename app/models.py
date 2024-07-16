@@ -76,9 +76,10 @@ class Base(DeclarativeBase, AsyncAttrs):
         return list(result.scalars().all())
 
     async def update(self, session: AsyncSession, **kwargs) -> Self:
-        await session.execute(
+        result = await session.execute(
             update(self.__class__).where(self.__class__.id == self.id).values(**kwargs)
         )
+        print(result)
         await session.commit()
         return self
 

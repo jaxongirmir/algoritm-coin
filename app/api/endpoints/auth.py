@@ -13,7 +13,7 @@ auth_router = APIRouter(prefix="/auth")
 cookie = APIKeyCookie(name="token")
 
 
-@auth_router.post(
+@auth_router.get(
     "/login",
     status_code=status.HTTP_201_CREATED,
 )
@@ -34,7 +34,9 @@ async def login(
     token = await exist_teacher.generate_token()
 
     response = JSONResponse(content={"detail": "Siz muvaffaqiyatli tizimga kirdingiz"})
-    response.set_cookie(key="token", value=token)
+    response.set_cookie(
+        key="token", value=token, httponly=True, secure=True, samesite="none"
+    )
     return response
 
 
