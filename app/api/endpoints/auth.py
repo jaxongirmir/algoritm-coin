@@ -74,7 +74,7 @@ async def forgot_password(
 
 @auth_router.get(
     "/logout",
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_200_OK,
 )
 async def logout(
     token: str = Depends(cookie),

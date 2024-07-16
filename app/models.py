@@ -229,7 +229,7 @@ class Student(Base):
         )
 
 
-# class Student(Base):
+# class Coin(Base):
 #     __tablename__ = "students"
 
 #     id: Mapped[uuid.UUID] = mapped_column(
