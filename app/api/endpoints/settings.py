@@ -1,6 +1,4 @@
 from fastapi import APIRouter, status
-from fastapi.responses import JSONResponse
-from pydantic import BaseModel
 
 settings_router = APIRouter(prefix="/settings")
 
@@ -9,9 +7,9 @@ settings_router = APIRouter(prefix="/settings")
     "/reset-db",
     status_code=status.HTTP_200_OK,
 )
-async def create_teacher():
-    from app.database import engine
-    from app.models import Base
+async def reset_database():
+    from database import engine
+    from models import Base
 
     async with engine.begin() as connection:
         await connection.exec_driver_sql("DROP SCHEMA public CASCADE")

@@ -1,8 +1,6 @@
 from __future__ import annotations
 import uuid
 from typing import Any, List
-
-from bcrypt import hashpw, gensalt
 from sqlalchemy.future import select
 from sqlalchemy import ForeignKey, Column, Table, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession, AsyncAttrs
@@ -15,7 +13,6 @@ from sqlalchemy.orm import (
     selectinload,
 )
 from sqlalchemy.dialects.postgresql import (
-    INTEGER,
     VARCHAR,
     TEXT,
     UUID,
@@ -24,8 +21,8 @@ from sqlalchemy.dialects.postgresql import (
     BOOLEAN,
 )
 
-from .service.token import TokenMixin
-from .service.password import PasswordMixin
+from app.service.jwt_token import TokenMixin
+from service.password import PasswordMixin
 
 
 class Base(DeclarativeBase, AsyncAttrs):

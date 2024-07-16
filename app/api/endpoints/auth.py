@@ -4,11 +4,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import APIKeyCookie
 from fastapi.responses import JSONResponse
-from ..dependencies.session import get_session
-
-from ...models import Teacher
-from ...schemas.auth import Login, ForgotPassword
-from ...schemas.teacher import TeachersResponse
+from api.dependencies.session import get_session
+from models import Teacher
+from schemas.auth import Login, ForgotPassword
+from schemas.teacher import TeachersResponse
 
 auth_router = APIRouter(prefix="/auth")
 cookie = APIKeyCookie(name="token")
@@ -39,7 +38,7 @@ async def login(
 
 
 @auth_router.get(
-    "/me", status_code=status.HTTP_201_CREATED, response_model=TeachersResponse
+    "/me", status_code=status.HTTP_202_ACCEPTED, response_model=TeachersResponse
 )
 async def me(
     token: str = Depends(cookie),
@@ -55,25 +54,19 @@ async def me(
     return teacher
 
 
-# @auth_router.post(
-#     "/forgot-password",
-#     status_code=status.HTTP_201_CREATED,
-# )
-# async def forgot_password(
-#     response: Response,
-#     payload: ForgotPassword = Depends(),
-#     session: AsyncSession = Depends(get_session),
-# ):
-#     teacher = Teacher()
-#     exist_teacher = await teacher.get_by(session, email=payload.email)
-#     if not exist_teacher:
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED, detail="Notog'ri email"
-#         )
-#     if not await exist_teacher.check_password(payload.password):
-#         raise HTTPException(
-#             status_code=status.HTTP_401_UNAUTHORIZED, detail="Notogri parol"
-#         )
-#     token = await exist_teacher.generate_token()
-#     response.set_cookie("token", token)
-#     return
+@auth_router.post(
+    "/forgot-password",
+    status_code=status.HTTP_201_CREATED,
+)
+async def forgot_password(
+    payload: ForgotPassword = Depends(),
+    session: AsyncSession = Depends(get_session),
+):
+    teacher = Teacher()
+    exist_teacher = await teacher.get_by(session, email=payload.email)
+    if not exist_teacher:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Notog'ri email"
+        )
+    token = await exist_teacher.generate_token()
+    return

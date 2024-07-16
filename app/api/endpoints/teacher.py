@@ -1,14 +1,15 @@
+from __future__ import annotations
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, status
-from ..dependencies.session import get_session
-from ...schemas.teacher import (
+from api.dependencies.session import get_session
+from schemas.teacher import (
     TeacherCreate,
     TeacherResponse,
     TeachersResponse,
     TeacherUpdate,
 )
-from ...models import Teacher
+from models import Teacher
 
 
 teacher_router = APIRouter(prefix="/teacher")
@@ -17,7 +18,7 @@ teacher_router = APIRouter(prefix="/teacher")
 @teacher_router.post(
     "/",
     status_code=status.HTTP_201_CREATED,
-    # response_model=TeacherResponse,
+    response_model=TeacherResponse,
 )
 async def create_teacher(
     payload: TeacherCreate,
@@ -28,7 +29,7 @@ async def create_teacher(
         _password=payload._password,
         **payload.model_dump(
             exclude={"password"},
-        )
+        ),
     )
     await teacher.save(session)
     return teacher
@@ -58,7 +59,7 @@ async def update_teacher(
     )
     return await teacher.update(
         session,
-        **payload.model_dump(exclude_none=True, exclude={"teacher_id", "password"})
+        **payload.model_dump(exclude_none=True, exclude={"teacher_id", "password"}),
     )
 
 

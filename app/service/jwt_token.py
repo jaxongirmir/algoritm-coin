@@ -1,22 +1,21 @@
 from os import getenv
-from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from typing import Any, Optional
 
+
 from jose import jwt, ExpiredSignatureError
+from fastapi import HTTPException, status
 
-
-load_dotenv(".env")
 SECRET_KEY = getenv("SECRET_KEY")
 
 
 class TokenMixin:
     id: Any
 
-    async def generate_token(self, expires_in: int = 3600) -> str:
+    async def generate_token(self) -> str:
+        # "exp": datetime.now() + timedelta(seconds=expires_in),
         payload = {
             "sub": str(self.id),
-            "exp": datetime.now() + timedelta(seconds=expires_in),
         }
         token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")  # type: ignore
         return token
@@ -27,4 +26,6 @@ class TokenMixin:
             self.id = payload["sub"]
             return True
         except ExpiredSignatureError:
-            raise ValueError("Токен истек")
+            raise HTTPException(
+                detail="Qaytadan kiring", status_code=status.HTTP_401_UNAUTHORIZED
+            )
