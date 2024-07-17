@@ -1,11 +1,11 @@
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException, status
-from api.dependencies.session import get_session
-from schemas.student import StudentCreate, StudentResponse, StudentUpdate
-from models import Teacher, Student
+from ..dependencies.session import get_session
+from ...schemas.student import StudentCreate, StudentResponse, StudentUpdate
+from ...models import Teacher, Student
 
-from api.endpoints.auth import cookie
+from ..endpoints.auth import cookie
 
 student_router = APIRouter(prefix="/student")
 

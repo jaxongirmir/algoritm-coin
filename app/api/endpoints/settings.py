@@ -8,8 +8,8 @@ settings_router = APIRouter(prefix="/settings")
     status_code=status.HTTP_200_OK,
 )
 async def reset_database():
-    from database import engine
-    from models import Base
+    from ...database import engine
+    from ...models import Base
 
     async with engine.begin() as connection:
         await connection.exec_driver_sql("DROP SCHEMA public CASCADE")

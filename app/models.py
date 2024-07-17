@@ -23,8 +23,8 @@ from sqlalchemy.dialects.postgresql import (
     BOOLEAN,
 )
 
-from service.jwt_token import TokenMixin
-from service.password import PasswordMixin
+from .service.jwt_token import TokenMixin
+from .service.password import PasswordMixin
 
 
 class Base(DeclarativeBase, AsyncAttrs):

@@ -4,14 +4,14 @@ from uuid import UUID
 from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException, status
-from api.dependencies.session import get_session
-from schemas.teacher import (
+from ..dependencies.session import get_session
+from ...schemas.teacher import (
     TeacherCreate,
     TeacherResponse,
     TeacherWithGroupsResponse,
     TeacherUpdate,
 )
-from models import Teacher
+from ...models import Teacher
 
 
 teacher_router = APIRouter(prefix="/teacher")

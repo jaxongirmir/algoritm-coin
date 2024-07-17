@@ -2,9 +2,9 @@ from typing import List
 from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException, status
-from api.dependencies.session import get_session
-from schemas.group import GroupCreate, GroupResponse, GroupsResponse, GroupUpdate
-from models import Group, Teacher
+from ..dependencies.session import get_session
+from ...schemas.group import GroupCreate, GroupResponse, GroupsResponse, GroupUpdate
+from ...models import Group, Teacher
 from .auth import cookie
 
 group_router = APIRouter(prefix="/group")

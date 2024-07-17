@@ -4,10 +4,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import APIKeyCookie
 from fastapi.responses import Response
-from api.dependencies.session import get_session
-from models import Teacher
-from schemas.auth import Login, ForgotPassword, ChangePassword
-from schemas.teacher import TeacherWithGroupsResponse
+
+from ...models import Teacher
+from ..dependencies.session import get_session
+from ...schemas.auth import Login, ForgotPassword, ChangePassword
+from ...schemas.teacher import TeacherWithGroupsResponse
 
 auth_router = APIRouter(prefix="/auth")
 cookie = APIKeyCookie(name="token")

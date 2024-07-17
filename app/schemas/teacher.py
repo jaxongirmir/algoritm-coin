@@ -13,7 +13,7 @@ from pydantic import (
     constr,
 )
 
-from service.password import PasswordMixin
+from ..service.password import PasswordMixin
 
 config = ConfigDict(from_attributes=True, arbitrary_types_allowed=True)
 
