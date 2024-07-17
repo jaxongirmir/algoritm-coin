@@ -21,7 +21,8 @@ async def create_group(
     teacher = Teacher()
     if not await teacher.verify_token(token):
         raise HTTPException(
-            detail="Qaytadan kiring", status_code=status.HTTP_401_UNAUTHORIZED
+            detail="Qaytadan avtorizatsiya qiling",
+            status_code=status.HTTP_401_UNAUTHORIZED,
         )
     await teacher.get(session)
     if teacher.admin:
@@ -41,13 +42,22 @@ async def create_group(
 
 
 @group_router.get(
-    "/", status_code=status.HTTP_200_OK, response_model=List[GroupsResponse]
+    "/",
+    status_code=status.HTTP_200_OK,
+    response_model=List[GroupsResponse] | GroupsResponse,
 )
-async def get_groups(
+async def get_group(
+    id: UUID | None = None,
+    major: str | None = None,
     session: AsyncSession = Depends(get_session),
 ):
-    group = Group()
-    return await group.get_all_with_teacher_and_students(session)
+    group = Group(id=id, major=major)
+    if id:
+        return await group.get_with_teacher_and_students(session)
+    elif major:
+        return await group.get_all_by_major_with_teacher_and_students(session)
+    else:
+        return await group.get_all_with_teacher_and_students(session)
 
 
 @group_router.put("/", status_code=status.HTTP_200_OK, response_model=GroupsResponse)

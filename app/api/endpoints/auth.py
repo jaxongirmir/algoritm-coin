@@ -6,7 +6,7 @@ from fastapi.security import APIKeyCookie
 from fastapi.responses import Response
 from api.dependencies.session import get_session
 from models import Teacher
-from schemas.auth import Login, ForgotPassword
+from schemas.auth import Login, ForgotPassword, ChangePassword
 from schemas.teacher import TeacherWithGroupsResponse
 
 auth_router = APIRouter(prefix="/auth")
@@ -22,8 +22,8 @@ async def login(
     payload: Login = Depends(),
     session: AsyncSession = Depends(get_session),
 ):
-    teacher = Teacher()
-    exist_teacher = await teacher.get_by(session, email=payload.email)
+    teacher = Teacher(email=payload.email)
+    exist_teacher = await teacher.get_with_groups(session)
     if not exist_teacher:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED, detail="Notog'ri email"
@@ -40,6 +40,18 @@ async def login(
         httponly=True,
     )
     return {"detail": "Siz muvaffaqiyatli tizimga kirdingiz"}
+
+
+@auth_router.get(
+    "/logout",
+    status_code=status.HTTP_200_OK,
+)
+async def logout(
+    response: Response,
+    token: str = Depends(cookie),
+):
+    response.delete_cookie(key="token")
+    return {"detail": "Siz tizimdan muvaffaqiyatli chiqdingiz"}
 
 
 @auth_router.get(
@@ -61,7 +73,7 @@ async def me(
     return teacher
 
 
-@auth_router.post(
+@auth_router.get(
     "/forgot-password",
     status_code=status.HTTP_205_RESET_CONTENT,
 )
@@ -69,8 +81,8 @@ async def forgot_password(
     payload: ForgotPassword = Depends(),
     session: AsyncSession = Depends(get_session),
 ):
-    teacher = Teacher()
-    exist_teacher = await teacher.get_by(session, email=payload.email)
+    teacher = Teacher(email=payload.email)
+    exist_teacher = await teacher.get_with_groups(session)
     if not exist_teacher:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Notog'ri email"
@@ -79,13 +91,24 @@ async def forgot_password(
     return
 
 
-@auth_router.get(
-    "/logout",
+@auth_router.put(
+    "/password",
     status_code=status.HTTP_200_OK,
 )
-async def logout(
-    response: Response,
+async def change_password(
+    payload: ChangePassword,
     token: str = Depends(cookie),
+    session: AsyncSession = Depends(get_session),
 ):
-    response.delete_cookie(key="token")
-    return {"detail": "Siz tizimdan muvaffaqiyatli chiqdingiz"}
+    teacher = Teacher()
+    if not await teacher.verify_token(token):
+        raise HTTPException(
+            detail="Qaytadan kiring", status_code=status.HTTP_401_UNAUTHORIZED
+        )
+    await teacher.get(session)
+    if not await teacher.check_password(payload.old_password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED, detail="Eski parol notogri"
+        )
+    await teacher.update(session)
+    return

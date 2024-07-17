@@ -103,7 +103,7 @@ class TeacherWithGroupsResponse(Teacher):
     groups: List[Optional[GroupsResponse]]
 
 
-class TeacherUpdate(BaseModel, PasswordMixin):
+class TeacherUpdate(BaseModel):
     model_config = config
     teacher_id: UUID = Field(title="Teacher’s id", description="Teacher’s id")
     email: EmailStr = Field(
@@ -116,12 +116,6 @@ class TeacherUpdate(BaseModel, PasswordMixin):
         title="Teacher’s fullname",
         description="Teacher’s fullname",
         examples=["Yusupov Jahongir"],
-        default=None,
-    )
-    password: Optional[SecretStr] = Field(
-        title="Teacher’s password",
-        description="Teacher’s password",
-        examples=["@SuperSecret123"],
         default=None,
     )
     admin: Optional[bool] = Field(

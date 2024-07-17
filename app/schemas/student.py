@@ -22,10 +22,15 @@ class StudentCreate(BaseModel):
         description="Student’s phone number",
         examples=["+998990019437"],
     )
-    fullname: str = Field(
-        title="Student’s fullname",
-        description="Student’s fullname",
-        examples=["Jahongir Yusupov"],
+    first_tname: str = Field(
+        title="Student’s firstname",
+        description="Student’s firstname",
+        examples=["Jahongir"],
+    )
+    last_name: str = Field(
+        title="Student’s lastname",
+        description="Student’s lastname",
+        examples=["Yusupov"],
     )
 
 
@@ -37,6 +42,7 @@ class TeacherResponse(BaseModel):
         description="Teacher’s email address",
         examples=["example@example.com"],
     )
+
     fullname: str = Field(
         title="Teacher’s fullname",
         description="Teacher’s fullname",
@@ -86,8 +92,13 @@ class StudentUpdate(BaseModel):
         examples=["+998990019437"],
     )
 
-    fullname: Optional[str] = Field(
+    first_name: Optional[str] = Field(
         title="Student’s fullname",
-        description="Student’s fullname",
+        description="Student’s first name",
+        examples=["Jahongir Yusupov"],
+    )
+    last_name: Optional[str] = Field(
+        title="Student’s fullname",
+        description="Student’s last_name",
         examples=["Jahongir Yusupov"],
     )

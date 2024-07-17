@@ -1,5 +1,7 @@
 from __future__ import annotations
-from typing import List
+from typing import List, Union
+from uuid import UUID
+from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, HTTPException, status
 from api.dependencies.session import get_session
@@ -24,11 +26,11 @@ async def create_teacher(
     payload: TeacherCreate,
     session: AsyncSession = Depends(get_session),
 ):
-    exist_teacher = Teacher()
-    if await exist_teacher.get_by(session, email=payload.email):
+    teacher = Teacher(email=payload.email)
+    if await teacher.get_with_groups(session):
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail=f"Bu email {exist_teacher.fullname} ga tegishli",
+            detail=f"Bu email {teacher.fullname} ga tegishli",
         )
     await payload.hach_password()
     teacher = Teacher(
@@ -42,14 +44,21 @@ async def create_teacher(
 
 
 @teacher_router.get(
-    "/", status_code=status.HTTP_200_OK, response_model=List[TeacherWithGroupsResponse]
+    "/",
+    status_code=status.HTTP_200_OK,
+    response_model=List[TeacherWithGroupsResponse] | TeacherWithGroupsResponse,
 )
-async def get_teachers(
+async def get_teacher(
+    id: UUID | None = None,
+    email: EmailStr | None = None,
     session: AsyncSession = Depends(get_session),
 ):
-    teacher = Teacher()
-    teachers = await teacher.get_all_with_groups_and_students(session)
-    return teachers
+    teacher = Teacher(id=id, email=email)
+    if id or email:
+        await teacher.get_with_groups_and_students(session)
+        return teacher
+    else:
+        return await teacher.get_all_with_groups_and_students(session)
 
 
 @teacher_router.put("/", status_code=status.HTTP_200_OK)
@@ -57,8 +66,6 @@ async def update_teacher(
     payload: TeacherUpdate,
     session: AsyncSession = Depends(get_session),
 ):
-    if payload.password:
-        await payload.hach_password()
 
     teacher = Teacher(
         id=payload.teacher_id,

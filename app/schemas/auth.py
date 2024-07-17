@@ -13,6 +13,8 @@ from pydantic import (
     constr,
 )
 
+from ..service.password import PasswordMixin
+
 config = ConfigDict(from_attributes=True)
 
 
@@ -37,4 +39,21 @@ class ForgotPassword(BaseModel):
         title="Teacher’s email",
         description="Teacher’s email address",
         examples=["example@example.com"],
+    )
+
+
+class ChangePassword(BaseModel, PasswordMixin):
+    model_config = config
+    old_password: SecretStr = Field(
+        title="Teacher’s old password",
+        description="Teacher’s old password",
+        examples=["@SuperSecret"],
+        min_length=6,
+    )
+
+    new_password: SecretStr = Field(
+        title="Teacher’s new password",
+        description="Teacher’s new password",
+        examples=["@SuperSecret"],
+        min_length=6,
     )

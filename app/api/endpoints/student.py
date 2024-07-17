@@ -24,7 +24,7 @@ async def create_student(
             detail="Qaytadan kiring", status_code=status.HTTP_401_UNAUTHORIZED
         )
     exist_student = Student(**payload.model_dump())
-    if await exist_student.get_by(session, phone_number=payload.phone_number):
+    if await exist_student.get_with_groups_and_teachers(session):
         exist_student_data = await exist_student.get_with_groups_and_teachers(session)
         return exist_student_data
     else:
